@@ -7,27 +7,25 @@
 #IncludeRegexTransform: 
 
 /home/hlx/hlx/Emiles/src/main.c
-stdio.h
--
-string.h
--
-stdint.h
--
-errno.h
--
-sys/queue.h
--
-rte_memory.h
--
-rte_launch.h
--
 rte_eal.h
--
-rte_per_lcore.h
 -
 rte_lcore.h
 -
-rte_debug.h
+rte_timer.h
+-
+unistd.h
+-
+stdio.h
+-
+stdlib.h
+-
+sys/stat.h
+-
+fcntl.h
+-
+string.h
+-
+time.h
 -
 
 /opt/mellanox/dpdk/include/dpdk/generic/rte_atomic.h
@@ -66,28 +64,12 @@ rte_atomic.h
 rte_compat.h
 -
 
-/opt/mellanox/dpdk/include/dpdk/generic/rte_rwlock.h
-rte_common.h
--
-rte_atomic.h
--
-rte_pause.h
--
-
 /opt/mellanox/dpdk/include/dpdk/generic/rte_spinlock.h
 rte_lcore.h
 -
 rte_common.h
 -
 rte_pause.h
--
-
-/opt/mellanox/dpdk/include/dpdk/rte_bitops.h
-stdint.h
--
-rte_debug.h
--
-rte_compat.h
 -
 
 /opt/mellanox/dpdk/include/dpdk/rte_branch_prediction.h
@@ -158,14 +140,6 @@ rte_uuid.h
 rte_pci_dev_feature_defs.h
 -
 
-/opt/mellanox/dpdk/include/dpdk/rte_fbarray.h
-stdio.h
--
-rte_compat.h
--
-rte_rwlock.h
--
-
 /opt/mellanox/dpdk/include/dpdk/rte_launch.h
 
 /opt/mellanox/dpdk/include/dpdk/rte_lcore.h
@@ -196,24 +170,6 @@ rte_config.h
 rte_compat.h
 -
 
-/opt/mellanox/dpdk/include/dpdk/rte_memory.h
-stdint.h
--
-stddef.h
--
-stdio.h
--
-rte_bitops.h
--
-rte_common.h
--
-rte_compat.h
--
-rte_config.h
--
-rte_fbarray.h
--
-
 /opt/mellanox/dpdk/include/dpdk/rte_os.h
 sched.h
 -
@@ -222,6 +178,20 @@ sched.h
 
 /opt/mellanox/dpdk/include/dpdk/rte_per_lcore.h
 pthread.h
+-
+
+/opt/mellanox/dpdk/include/dpdk/rte_timer.h
+stdio.h
+-
+stdint.h
+-
+stddef.h
+-
+rte_common.h
+-
+rte_config.h
+-
+rte_spinlock.h
 -
 
 /opt/mellanox/dpdk/include/dpdk/rte_uuid.h
@@ -299,12 +269,6 @@ emmintrin.h
 /opt/mellanox/dpdk/include/x86_64-linux-gnu/dpdk/rte_rtm.h
 rte_common.h
 -
-
-/opt/mellanox/dpdk/include/x86_64-linux-gnu/dpdk/rte_rwlock.h
-generic/rte_rwlock.h
-/opt/mellanox/dpdk/include/x86_64-linux-gnu/dpdk/generic/rte_rwlock.h
-rte_spinlock.h
-/opt/mellanox/dpdk/include/x86_64-linux-gnu/dpdk/rte_spinlock.h
 
 /opt/mellanox/dpdk/include/x86_64-linux-gnu/dpdk/rte_spinlock.h
 generic/rte_spinlock.h

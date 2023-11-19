@@ -6,9 +6,7 @@ CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/dpdk/generic/rte_a
 CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/dpdk/generic/rte_cpuflags.h
 CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/dpdk/generic/rte_cycles.h
 CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/dpdk/generic/rte_pause.h
-CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/dpdk/generic/rte_rwlock.h
 CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/dpdk/generic/rte_spinlock.h
-CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/dpdk/rte_bitops.h
 CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/dpdk/rte_branch_prediction.h
 CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/dpdk/rte_bus.h
 CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/dpdk/rte_common.h
@@ -16,14 +14,13 @@ CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/dpdk/rte_compat.h
 CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/dpdk/rte_debug.h
 CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/dpdk/rte_dev.h
 CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/dpdk/rte_eal.h
-CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/dpdk/rte_fbarray.h
 CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/dpdk/rte_launch.h
 CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/dpdk/rte_lcore.h
 CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/dpdk/rte_log.h
-CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/dpdk/rte_memory.h
 CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/dpdk/rte_os.h
 CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/dpdk/rte_pci_dev_feature_defs.h
 CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/dpdk/rte_per_lcore.h
+CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/dpdk/rte_timer.h
 CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/dpdk/rte_uuid.h
 CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/x86_64-linux-gnu/dpdk/rte_atomic.h
 CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/x86_64-linux-gnu/dpdk/rte_atomic_32.h
@@ -35,6 +32,5 @@ CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/x86_64-linux-gnu/d
 CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/x86_64-linux-gnu/dpdk/rte_cycles.h
 CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/x86_64-linux-gnu/dpdk/rte_pause.h
 CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/x86_64-linux-gnu/dpdk/rte_rtm.h
-CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/x86_64-linux-gnu/dpdk/rte_rwlock.h
 CMakeFiles/Emile.dir/src/main.c.o: /opt/mellanox/dpdk/include/x86_64-linux-gnu/dpdk/rte_spinlock.h
 
