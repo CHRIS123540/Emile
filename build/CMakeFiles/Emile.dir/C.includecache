@@ -25,4 +25,8 @@ rte_mbuf.h
 -
 rte_timer.h
 -
+rte_hash.h
+-
+rte_jhash.h
+-
 

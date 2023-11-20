@@ -1,7 +1,3 @@
-/* SPDX-License-Identifier: BSD-3-Clause
- * Copyright(c) 2010-2015 Intel Corporation
- */
-
 #include <stdint.h>
 #include <stdlib.h>
 #include <inttypes.h>
@@ -11,6 +7,9 @@
 #include <rte_lcore.h>
 #include <rte_mbuf.h>
 #include <rte_timer.h>
+#include <rte_hash.h>
+#include <rte_jhash.h>
+
 
 #define RX_RING_SIZE 1024
 #define TX_RING_SIZE 1024
@@ -18,16 +17,77 @@
 #define NUM_MBUFS 8191
 #define MBUF_CACHE_SIZE 250
 #define BURST_SIZE 32
+
+#define PRINT_IP_ADDR(ip_addr) printf("IP: %d.%d.%d.%d\n", \
+    (int)((ip_addr) >> 24) & 0xFF, \
+    (int)((ip_addr) >> 16) & 0xFF, \
+    (int)((ip_addr) >> 8) & 0xFF, \
+    (int)(ip_addr) & 0xFF)
+
+#define PRINT_PORT_MAC(ether_addr) \
+    printf("MAC: %02" PRIx8 " %02" PRIx8 " %02" PRIx8 \
+           " %02" PRIx8 " %02" PRIx8 " %02" PRIx8 "\n", \
+		    RTE_ETHER_ADDR_BYTES(&ether_addr))
+
+#define PRINT_PORT(port)\
+	printf("PORT: %" PRIu16 "\n", port);
+
 static uint64_t Interval;
 uint64_t total = 0;
-/* basicfwd.c: Basic DPDK skeleton forwarding example. */
+uint64_t total_last = 0;
+uint64_t Flow_num = 2000000;
 
-/*
- * Initializes a given port using global settings and with the RX buffers
- * coming from the mbuf_pool passed as a parameter.
- */
+typedef struct v4_tuple
+{
+	uint32_t src_addr;
+	uint32_t dst_addr;
+	union {
+		struct {
+			uint16_t sport;
+			uint16_t dport;
+		};
+		uint32_t ports;
+	};
+} v4_tuple;
 
-/* Main functional part of port initialization. 8< */
+static struct rte_hash *create_hash_table(const char *tablename, uint32_t entry_num, uint32_t init_num)
+{
+	struct rte_hash *hash_table;
+	struct rte_hash_parameters hash_params = {0};
+
+	hash_params.entries = entry_num;
+	hash_params.key_len = sizeof(v4_tuple);
+	hash_params.hash_func = rte_jhash;
+	hash_params.hash_func_init_val = init_num;
+
+	hash_params.name = tablename;
+	hash_params.socket_id = rte_socket_id();
+	hash_params.extra_flag = RTE_HASH_EXTRA_FLAGS_RW_CONCURRENCY;
+	// hash_params.key_mode = RTE_HASH_KEY_MODE_DUP;
+
+	/* Find if the hash table was created before */
+	hash_table = rte_hash_find_existing(hash_params.name);
+	if (hash_table != NULL)
+	{
+		printf("exist\n");
+		return hash_table;
+	}
+	else
+	{
+		hash_table = rte_hash_create(&hash_params);
+		if (!hash_table)
+		{
+			printf("creay failed\n");
+			exit(0);
+		}
+	}
+
+	return hash_table;
+}
+
+
+
+//启动端口
 static inline int
 port_init(uint16_t port, struct rte_mempool *mbuf_pool)
 {
@@ -94,10 +154,8 @@ port_init(uint16_t port, struct rte_mempool *mbuf_pool)
 	retval = rte_eth_macaddr_get(port, &addr);
 	if (retval != 0)
 		return retval;
-
-	printf("Port %u MAC: %02" PRIx8 " %02" PRIx8 " %02" PRIx8
-			   " %02" PRIx8 " %02" PRIx8 " %02" PRIx8 "\n",
-			port, RTE_ETHER_ADDR_BYTES(&addr));
+	
+	PRINT_PORT_MAC(addr);
 
 	/* Enable RX in promiscuous mode for the Ethernet device. */
 	retval = rte_eth_promiscuous_enable(port);
@@ -107,23 +165,19 @@ port_init(uint16_t port, struct rte_mempool *mbuf_pool)
 
 	return 0;
 }
-/* >8 End of main functional part of port initialization. */
 
-/*
- * The lcore main. This is the main thread that does the work, reading from
- * an input port and writing to an output port.
- */
 
- /* Basic forwarding application lcore. 8< */
 static int
 lcore_main(__rte_unused void *arg)
 {
 	uint16_t port;
+    struct rte_ipv4_hdr *ipv4;
+    struct rte_tcp_hdr *tcp;
+    struct rte_udp_hdr *udp;
+	v4_tuple ipv4_tuple;
+	struct rte_ether_hdr *eth_hdr;                
 
-	/*
-	 * Check that the port is on the same NUMA node as the polling thread
-	 * for best performance.
-	 */
+	
 	RTE_ETH_FOREACH_DEV(port)
 		if (rte_eth_dev_socket_id(port) >= 0 &&
 				rte_eth_dev_socket_id(port) !=
@@ -150,27 +204,52 @@ lcore_main(__rte_unused void *arg)
 			//const uint16_t nb_tx = rte_eth_tx_burst(port, 0,bufs, nb_rx);
 			if(nb_rx > 0)
 			{
-		        total += nb_rx;				
+		    
+			    total += nb_rx;				
 			//	printf("Total %ld\n",total);
 			}
 
 			/*这一块用于释放收包*/
 			uint16_t buf;
-			for (buf = 0; buf < nb_rx; buf++)
+			for (buf = 0; buf < nb_rx; buf++){
+
+				ipv4 = (struct rte_ipv4_hdr *)(rte_pktmbuf_mtod(bufs[buf], struct rte_ether_hdr *) + 1);
+                ipv4_tuple.src_addr = rte_be_to_cpu_32(ipv4->src_addr);
+                ipv4_tuple.dst_addr = rte_be_to_cpu_32(ipv4->dst_addr);
+				eth_hdr = rte_pktmbuf_mtod(bufs[buf], struct rte_ether_hdr *);
+			
+				/* only process TCP flows */
+                if (ipv4->next_proto_id == 6)
+                {
+                    tcp = (struct rte_tcp_hdr *)((unsigned char *)ipv4 + sizeof(struct rte_ipv4_hdr));
+                    ipv4_tuple.sport = rte_be_to_cpu_16(tcp->src_port);
+                    ipv4_tuple.dport = rte_be_to_cpu_16(tcp->dst_port);
+					
+					PRINT_IP_ADDR(ipv4_tuple.src_addr);
+					PRINT_IP_ADDR(ipv4_tuple.dst_addr);		
+					PRINT_PORT_MAC(eth_hdr->src_addr);
+					PRINT_PORT_MAC(eth_hdr->dst_addr);						
+					PRINT_PORT(ipv4_tuple.sport);
+					PRINT_PORT(ipv4_tuple.dport);
+                }
+                else if (ipv4->next_proto_id == 17)
+                {
+                    udp = (struct rte_udp_hdr *)((unsigned char *)ipv4 + sizeof(struct rte_ipv4_hdr));
+                    ipv4_tuple.sport = rte_be_to_cpu_16(udp->src_port);
+                    ipv4_tuple.dport = rte_be_to_cpu_16(udp->dst_port);
+
+                }	
+				
 				rte_pktmbuf_free(bufs[buf]);
+				}
 
 		}
 	}
 	/* >8 End of loop. */
 	return 0;
 }
-/* >8 End Basic forwarding application lcore. */
 
-/*
- * The main function, which does initialization and calls the per-lcore
- * functions.
- */
-//打印必要信息
+
 static void stats_display()
 {
 	const char clr[] = {27, '[', '2', 'J', '\0'};
@@ -179,15 +258,14 @@ static void stats_display()
 
 	/* Clear screen and move to top left */
 	printf("%s%s", clr, top_left);
-	printf("Total %ld\n",total);
+	printf("Total %ld\n",total - total_last);
+	total_last = total;
 }
-
-
 
 // 定时器回调函数
 static void timer_callback(struct rte_timer *timer, void *arg) {
 
-	stats_display();
+	//stats_display();
 
 }
 
@@ -206,8 +284,6 @@ main(int argc, char *argv[])
 
 	argc -= ret;
 	argv += ret;
-
-
 
 	/* Check that there is an even number of ports to send/receive on. */
 	nb_ports = rte_eth_dev_count_avail();
