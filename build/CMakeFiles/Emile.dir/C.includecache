@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/hlx/hlx/test/Emile-main/src/main.c
+stdint.h
+-
+stdlib.h
+-
+inttypes.h
+-
+rte_eal.h
+-
+rte_ethdev.h
+-
+rte_cycles.h
+-
+rte_lcore.h
+-
+rte_mbuf.h
+-
+rte_timer.h
+-
+rte_hash.h
+-
+rte_jhash.h
+-
+
