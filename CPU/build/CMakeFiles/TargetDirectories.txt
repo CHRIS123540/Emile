@@ -1,0 +1,3 @@
+/home/hlx/dpdk-stable-22.11.2/examples/test_cpu/build/CMakeFiles/basicfwd.dir
+/home/hlx/dpdk-stable-22.11.2/examples/test_cpu/build/CMakeFiles/edit_cache.dir
+/home/hlx/dpdk-stable-22.11.2/examples/test_cpu/build/CMakeFiles/rebuild_cache.dir
